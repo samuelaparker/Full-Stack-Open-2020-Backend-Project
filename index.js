@@ -1,6 +1,8 @@
 const express = require('express')
 let app = express()
 
+app.use(express.json())
+
 let persons = [
     {
         "name": "Arto Hellas",
@@ -34,7 +36,28 @@ app.get('/api/persons', (request, response) => {
 })
 app.get('/info', (request, response) => {
     response.send(`<p>Phonebook has info for ${persons.length} people. <br>${date}</p>`)
+})
+app.post('/api/persons', (request, response) => {
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+      }
 
+    const body = request.body
+    console.log(body.content)
+    // if (!body.content) {
+    //     return response.status(400).json({
+    //         error: 'content missing'
+    //     })
+    // }
+    const person = {
+        name: body.name,
+        number: body.number,
+        date: new Date(),
+        id: Math.floor(getRandomArbitrary(1, 1000)),
+    }
+    persons = persons.concat(person)
+    console.log(person)
+    response.json(person)
 })
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
