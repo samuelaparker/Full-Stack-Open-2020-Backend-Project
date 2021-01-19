@@ -43,12 +43,18 @@ app.post('/api/persons', (request, response) => {
       }
 
     const body = request.body
-    console.log(body.content)
-    // if (!body.content) {
-    //     return response.status(400).json({
-    //         error: 'content missing'
-    //     })
-    // }
+    
+    if (!body) {
+        return response.status(400).json({
+            error: 'content missing'
+        })
+    }
+    if (persons.some(n => n.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
+    console.log(persons)
     const person = {
         name: body.name,
         number: body.number,
@@ -56,7 +62,7 @@ app.post('/api/persons', (request, response) => {
         id: Math.floor(getRandomArbitrary(1, 1000)),
     }
     persons = persons.concat(person)
-    console.log(person)
+
     response.json(person)
 })
 app.get('/api/persons/:id', (request, response) => {
@@ -75,8 +81,8 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 
-
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+
