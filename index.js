@@ -1,7 +1,15 @@
+const { request } = require('express')
 const express = require('express')
+const morgan = require('morgan')
 let app = express()
-
 app.use(express.json())
+
+morgan.token('body', function getBody (req) {
+    return JSON.stringify(req.body)
+
+  })
+app.use(morgan(':method :url :status :response-time ms - :res[content-type] :body'))
+  
 
 let persons = [
     {
@@ -41,9 +49,9 @@ app.post('/api/persons', (request, response) => {
     function getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
       }
-
+      
     const body = request.body
-    
+      
     if (!body) {
         return response.status(400).json({
             error: 'content missing'
@@ -54,15 +62,14 @@ app.post('/api/persons', (request, response) => {
             error: 'name must be unique'
         })
     }
-    console.log(persons)
     const person = {
         name: body.name,
         number: body.number,
         date: new Date(),
         id: Math.floor(getRandomArbitrary(1, 1000)),
     }
+    
     persons = persons.concat(person)
-
     response.json(person)
 })
 app.get('/api/persons/:id', (request, response) => {
@@ -79,7 +86,12 @@ app.delete('/api/persons/:id', (request, response) => {
     person = persons.filter(person => person.id !== id)
     response.status(204).end()
 })
-
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+  app.use(unknownEndpoint)
+  
+  
 
 const PORT = 3001
 app.listen(PORT, () => {
