@@ -11,7 +11,6 @@ app.use(express.static('build'))
 //middleware
 morgan.token('body', function getBody (req) {
     return JSON.stringify(req.body)
-
   })
 
 app.use(morgan(':method :url :status :response-time ms - :res[content-type] :body'))

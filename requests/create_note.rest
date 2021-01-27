@@ -18,4 +18,11 @@ Content-Type: application/json
   "name": "Trish",
   "number": "555 555 5553"
 }
+###
+GET  http://localhost:3001/api/persons/
+Content-Type: application/json
+###
+DELETE   http://localhost:3001/api/persons/310
+Content-Type: application/json
+
 
