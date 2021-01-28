@@ -3,14 +3,14 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
-
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
 app.use(express.static('build'))
 
 //middleware
 morgan.token('body', function getBody (req) {
     return JSON.stringify(req.body)
+    next()
   })
 
 app.use(morgan(':method :url :status :response-time ms - :res[content-type] :body'))
@@ -18,7 +18,7 @@ app.use(morgan(':method :url :status :response-time ms - :res[content-type] :bod
 
 let persons = [
     {
-        "name": "Arto Hellas",
+        "name": "Dingas Hellas",
         "number": "040-123456",
         "id": 1
     },
@@ -88,7 +88,8 @@ app.get('/api/persons/:id', (request, response) => {
 })
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    person = persons.filter(person => person.id !== id)
+    console.log(request.params.id)
+    persons = persons.filter(person => person.id !== id)
     response.status(204).end()
 })
 const unknownEndpoint = (request, response) => {
