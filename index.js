@@ -1,20 +1,22 @@
-const { request } = require('express')
+require('dotenv').config()
+const { request, response } = require('express')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const Person = require('./models/person')
 const cors = require('cors')
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
 //middleware
-morgan.token('body', function getBody (req) {
+morgan.token('body', function getBody(req) {
     return JSON.stringify(req.body)
     next()
-  })
+})
 
 app.use(morgan(':method :url :status :response-time ms - :res[content-type] :body'))
-  
+
 
 let persons = [
     {
@@ -45,46 +47,69 @@ app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
 })
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(notes => {
+        response.json(notes)
+    })
 })
 app.get('/info', (request, response) => {
     response.send(`<p>Phonebook has info for ${persons.length} people. <br>${date}</p>`)
 })
+//node server post request below:
+// app.post('/api/persons', (request, response) => { 
+//     function getRandomArbitrary(min, max) {
+//         return Math.random() * (max - min) + min;
+//       }
+
+//     const body = request.body
+
+//     if (!body) {
+//         return response.status(400).json({
+//             error: 'content missing'
+//         })
+//     }
+//     if (persons.some(n => n.name === body.name)) {
+//         return response.status(400).json({
+//             error: 'name must be unique'
+//         })
+//     }
+//     const person = {
+//         name: body.name,
+//         number: body.number,
+//         date: new Date(),
+//         id: Math.floor(getRandomArbitrary(1, 1000)),
+//     }
+
+//     persons = persons.concat(person)
+//     response.json(person)
+// })
 app.post('/api/persons', (request, response) => {
-    function getRandomArbitrary(min, max) {
-        return Math.random() * (max - min) + min;
-      }
-      
     const body = request.body
-      
-    if (!body) {
-        return response.status(400).json({
-            error: 'content missing'
-        })
+
+    if (body.name === undefined) {
+        return response.status(400).json({ error: 'name missing' })
     }
-    if (persons.some(n => n.name === body.name)) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        date: new Date(),
-        id: Math.floor(getRandomArbitrary(1, 1000)),
-    }
-    
-    persons = persons.concat(person)
-    response.json(person)
+    })
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
+// node server individual person get request below:
+// app.get('/api/persons/:id', (request, response) => {
+//     const id = Number(request.params.id)
+//     const person = persons.find(person => person.id === id)
+//     if (person) {
+//         response.json(person)
+//     } else {
+//         response.status(404).end()
+//     }
+// })
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-    if (person) {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
@@ -94,10 +119,10 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
-  }
-  app.use(unknownEndpoint)
-  
-  
+}
+app.use(unknownEndpoint)
+
+
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
