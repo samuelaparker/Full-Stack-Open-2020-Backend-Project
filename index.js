@@ -51,8 +51,9 @@ app.get('/api/persons', (request, response) => {
         response.json(notes)
     })
 })
+
 app.get('/info', (request, response) => {
-    response.send(`<p>Phonebook has info for ${persons.length} people. <br>${date}</p>`)
+    response.json(`Phonebook has info for ${persons.length} people. ${date}`)
 })
 //node server post request below:
 // app.post('/api/persons', (request, response) => { 
@@ -104,11 +105,11 @@ app.put('/api/persons/:id', (request, response, next) => {
         number: body.number,
     }
     Person.findByIdAndUpdate(request.params.id, person, { new: true })
-    .then(updatePerson => {
-        response.json(updatePerson.toJSON())
-    })
-    .catch(error => next(error))
-  })
+        .then(updatePerson => {
+            response.json(updatePerson.toJSON())
+        })
+        .catch(error => next(error))
+})
 // node server individual person get request below:
 // app.get('/api/persons/:id', (request, response) => {
 //     const id = Number(request.params.id)
@@ -120,7 +121,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 //     }
 // })
 app.get('/api/persons/:id', (request, response, next) => {
-    
+
     Person.findById(request.params.id)
         .then(person => {
             if (person) {
@@ -139,10 +140,10 @@ app.delete('/api/persons/:id', (request, response, next) => {
     // persons = persons.filter(person => person.id !== id)
     // response.status(204).end()
     Person.findByIdAndRemove(request.params.id)
-    .then(result => {
-        response.status(204).end()
-    })
-    .catch(error => next(error))
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
@@ -151,15 +152,15 @@ app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
-  
+
     if (error.name === 'CastError' && error.kind == 'ObjectId') {
-      return response.status(400).send({ error: 'malformatted id' })
-    } 
-  
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+
     next(error)
-  }
-  
-  app.use(errorHandler)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
