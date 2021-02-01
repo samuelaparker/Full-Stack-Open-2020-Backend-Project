@@ -106,25 +106,29 @@ app.post('/api/persons', (request, response) => {
 //         response.status(404).end()
 //     }
 // })
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
         .then(person => {
             if (person) {
-                response.json(person)
+                response.json(person.toJSON())
             } else {
                 response.status(404).end()
             }
         })
         .catch(error => {
-            console.log(error)
-            response.status(500).end()
+            next(error)
         })
 })
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    console.log(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+    // const id = Number(request.params.id)
+    // console.log(request.params.id)
+    // persons = persons.filter(person => person.id !== id)
+    // response.status(204).end()
+    Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+        response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
