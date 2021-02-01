@@ -96,6 +96,19 @@ app.post('/api/persons', (request, response) => {
         response.json(savedPerson)
     })
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    const person = {
+        name: body.name,
+        number: body.number,
+    }
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatePerson => {
+        response.json(updatePerson.toJSON())
+    })
+    .catch(error => next(error))
+  })
 // node server individual person get request below:
 // app.get('/api/persons/:id', (request, response) => {
 //     const id = Number(request.params.id)
@@ -107,6 +120,7 @@ app.post('/api/persons', (request, response) => {
 //     }
 // })
 app.get('/api/persons/:id', (request, response, next) => {
+    
     Person.findById(request.params.id)
         .then(person => {
             if (person) {
