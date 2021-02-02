@@ -44,7 +44,7 @@ let persons = [
 let date = new Date();
 
 app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
+    response.json('Hello World!')
 })
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(notes => {
@@ -93,8 +93,12 @@ app.post('/api/persons', (request, response) => {
         name: body.name,
         number: body.number,
     })
-    person.save().then(savedPerson => {
+    person.save()
+    .then(savedPerson => {
         response.json(savedPerson)
+    })
+    .catch(err => {
+        console.log(err)
     })
 })
 
