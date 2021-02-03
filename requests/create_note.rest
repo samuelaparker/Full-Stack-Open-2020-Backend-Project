@@ -22,13 +22,21 @@ Content-Type: application/json
 GET  http://localhost:3001/api/persons/
 Content-Type: application/json
 ###
-DELETE   http://localhost:3001/api/persons/60197bdb2246766722b9faea
+DELETE   http://localhost:3001/api/persons/601983164602766bd58e6bbe
 # Content-Type: application/json
 ###
 POST http://localhost:3001/api/persons/
 Content-Type: application/json
 
 {
-    "name": "testilesti",
-    "number": "9999999999"
+    "name": "dingus mcgee",
+    "number": "33332"
 }
+###
+PUT http://localhost:3001/api/persons/60142d5ef58aaf13f62f0072
+Content-Type: application/json
+{
+    "name": "woahh buddy",
+    "number": "123"
+}
+
