@@ -22,7 +22,7 @@ Content-Type: application/json
 GET  http://localhost:3001/api/persons/
 Content-Type: application/json
 ###
-DELETE   http://localhost:3001/api/persons/601983164602766bd58e6bbe
+DELETE   http://localhost:3001/api/persons/601c201b17354692224211a1
 # Content-Type: application/json
 ###
 POST http://localhost:3001/api/persons/
@@ -30,13 +30,14 @@ Content-Type: application/json
 
 {
     "name": "dingus mcgee",
-    "number": "33332"
+    "number": "111111111111"
 }
 ###
-PUT http://localhost:3001/api/persons/60142d5ef58aaf13f62f0072
+PUT http://localhost:3001/api/persons/601c35d9626905a41d90d208
 Content-Type: application/json
+
 {
-    "name": "woahh buddy",
-    "number": "123"
+    "name": "Trish",
+    "number": "12377777777777"
 }
 
