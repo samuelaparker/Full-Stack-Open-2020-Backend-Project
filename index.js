@@ -46,15 +46,25 @@ let date = new Date();
 app.get('/', (request, response) => {
     response.json('Hello World!')
 })
-app.get('/api/persons', (request, response) => {
-    Person.find({}).then(notes => {
-        response.json(notes)
-    })
-})
 
-app.get('/info', (request, response) => {
-    response.json(`Phonebook has info for ${persons.length} people. ${date}`)
-})
+app.get("/info", (req, res, next) => {
+    Person.countDocuments()
+      .then(result => {
+        const message = `<p>Phonebook has info for ${result} people</p><p>${new Date()}</p>`;
+        res.send(message).end();
+      })
+      .catch(error => next(error));
+  });
+
+app.get("/api/persons", (req, res, next) => {
+    Person.find({})
+      .then(result => {
+        res.status(200).json(result.map(i => i.toJSON()));
+      })
+      .catch(error => next(error));
+  });
+
+
 //node server post request below:
 // app.post('/api/persons', (request, response) => { 
 //     function getRandomArbitrary(min, max) {
