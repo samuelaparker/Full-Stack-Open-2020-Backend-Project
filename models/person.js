@@ -13,11 +13,6 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     console.log('error connecting to MongoDB:', error.message)
   })
 
-//   const personSchema = new mongoose.Schema({
-//     name: String,
-//     number: String,
-//     id: Number,
-// })
 var personSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true, minlength: 3, },
   number: { type: String, unique: true, required: true, minlength: 8, },

@@ -63,36 +63,6 @@ app.get("/api/persons", (req, res, next) => {
         })
         .catch(error => next(error));
 });
-
-
-//node server post request below:
-// app.post('/api/persons', (request, response) => { 
-//     function getRandomArbitrary(min, max) {
-//         return Math.random() * (max - min) + min;
-//       }
-
-//     const body = request.body
-
-//     if (!body) {
-//         return response.status(400).json({
-//             error: 'content missing'
-//         })
-//     }
-//     if (persons.some(n => n.name === body.name)) {
-//         return response.status(400).json({
-//             error: 'name must be unique'
-//         })
-//     }
-//     const person = {
-//         name: body.name,
-//         number: body.number,
-//         date: new Date(),
-//         id: Math.floor(getRandomArbitrary(1, 1000)),
-//     }
-
-//     persons = persons.concat(person)
-//     response.json(person)
-// })
 app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
@@ -124,16 +94,6 @@ app.put('/api/persons/:id', (request, response, next) => {
         })
         .catch(error => next(error))
 })
-// node server individual person get request below:
-// app.get('/api/persons/:id', (request, response) => {
-//     const id = Number(request.params.id)
-//     const person = persons.find(person => person.id === id)
-//     if (person) {
-//         response.json(person)
-//     } else {
-//         response.status(404).end()
-//     }
-// })
 app.get('/api/persons/:id', (request, response, next) => {
 
     Person.findById(request.params.id)
@@ -149,10 +109,6 @@ app.get('/api/persons/:id', (request, response, next) => {
         })
 })
 app.delete('/api/persons/:id', (request, response, next) => {
-    // const id = Number(request.params.id)
-    // console.log(request.params.id)
-    // persons = persons.filter(person => person.id !== id)
-    // response.status(204).end()
     Person.findByIdAndRemove(request.params.id)
         .then(result => {
             response.status(204).end()
@@ -170,7 +126,6 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-        //   return response.status(400).json({ error: error.message })
         return response.status(400).json(error)
     }
     next(error)
