@@ -49,20 +49,20 @@ app.get('/', (request, response) => {
 
 app.get("/info", (req, res, next) => {
     Person.countDocuments()
-      .then(result => {
-        const message = `<p>Phonebook has info for ${result} people</p><p>${new Date()}</p>`;
-        res.send(message).end();
-      })
-      .catch(error => next(error));
-  });
+        .then(result => {
+            const message = `<p>Phonebook has info for ${result} people</p><p>${new Date()}</p>`;
+            res.send(message).end();
+        })
+        .catch(error => next(error));
+});
 
 app.get("/api/persons", (req, res, next) => {
     Person.find({})
-      .then(result => {
-        res.status(200).json(result.map(i => i.toJSON()));
-      })
-      .catch(error => next(error));
-  });
+        .then(result => {
+            res.status(200).json(result.map(i => i.toJSON()));
+        })
+        .catch(error => next(error));
+});
 
 
 //node server post request below:
@@ -104,12 +104,12 @@ app.post('/api/persons', (request, response, next) => {
         number: body.number,
     })
     person.save()
-    .then(savedPerson => {
-        response.json(savedPerson)
-    })
-    .catch(err => {
-        next(err)
-    })
+        .then(savedPerson => {
+            response.json(savedPerson)
+        })
+        .catch(err => {
+            next(err)
+        })
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -166,15 +166,15 @@ app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
-  
+
     if (error.name === 'CastError') {
-      return response.status(400).send({ error: 'malformatted id' })
+        return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-    //   return response.status(400).json({ error: error.message })
-    return response.status(400).json(error)
+        //   return response.status(400).json({ error: error.message })
+        return response.status(400).json(error)
     }
     next(error)
-  }
+}
 
 app.use(errorHandler)
 
